@@ -15,6 +15,6 @@ model Note {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   title     String   @unique
-  content   String
+  content   String?
   archieved Boolean  @default(false)
 }
