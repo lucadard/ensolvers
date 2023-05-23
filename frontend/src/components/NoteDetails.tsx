@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Note } from '../types'
-import { editNote } from '../api'
+import { editNote, createNote } from '../api'
+import { useLocation } from 'wouter'
 
 type NoteFormProps = {
   defaultFormData?: Partial<Note>
-  formAction: (newData: Partial<Note>) => void
+  // formAction: (newData: Partial<Note> | Pick<Note, 'title' | 'content'>) => void
+  formAction: (newData: any) => void
   isLoading?: boolean
 }
 
@@ -40,7 +42,10 @@ function NoteForm ({ defaultFormData, formAction, isLoading = false }: NoteFormP
       />
       <div className='mt-auto grid grid-cols-3 p-4'>
         <button className='place-self-start'>{isLoading ? '◴' : 'Save'}</button>
-        <p className='col-span-2 col-start-2 text-end'>Last updated: {defaultFormData?.updatedAt?.toLocaleString('en-US')}</p>
+        {defaultFormData &&
+          <p className='col-span-2 col-start-2 text-end'>
+            Last updated: {defaultFormData?.updatedAt?.toLocaleString('en-US')}
+          </p>}
       </div>
     </form>
   )
@@ -62,6 +67,33 @@ export default function NoteDetails ({ data, onUpdate }: { data: Note, onUpdate:
   }
 
   return (
-    <NoteForm defaultFormData={data} formAction={handleEditNote} />
+    <NoteForm
+      defaultFormData={data}
+      formAction={handleEditNote} isLoading={isLoading}
+    />
+  )
+}
+
+export function CreateNote ({ onUpdate }: { onUpdate: (id: string, data: Partial<Note>) => void }) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [,setLocation] = useLocation()
+
+  async function handleCreateNote (newFormData: Pick<Note, 'title' | 'content'>) {
+    if (isLoading) return
+    setIsLoading(true)
+    try {
+      const createdData = await createNote(newFormData)
+      // onUpdate(undefined, createdData, {})
+    } catch (err) {
+      setIsLoading(false)
+      console.error(err)
+    }
+    setLocation('/')
+  }
+
+  return (
+    <NoteForm
+      formAction={handleCreateNote} isLoading={isLoading}
+    />
   )
 }
