@@ -20,11 +20,11 @@ export class NotesService {
     return this.prisma.note.findMany({});
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prisma.note.findUnique({ where: { id } });
   }
 
-  update(id: number, updateNoteDto: UpdateNoteDto) {
+  update(id: string, updateNoteDto: UpdateNoteDto) {
     return this.prisma.note.update({
       where: { id },
       data: {
@@ -35,7 +35,7 @@ export class NotesService {
     });
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.prisma.note.delete({ where: { id } });
   }
 }
