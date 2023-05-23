@@ -5,6 +5,7 @@ import Modal from './Modal'
 import { Note } from '../types'
 import { editNote, removeNote } from '../api'
 import { Link } from 'wouter'
+import Button from './Button'
 
 export function NoteList ({ notes, onNoteUpdate }: { notes: Note[], onNoteUpdate: (id: string, data: Partial<Note>, opt?: { delete: boolean }) => void }) {
   if (notes.length === 0) return <div>There's nothing to show here...</div>
@@ -47,19 +48,11 @@ function NoteCard ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data
     if (!modal) {
       return setModal(
         <div className='p-4'>
-          <p className='mb-4 text-xl'>Estas seguro?</p>
+          <p className='mb-4 text-xl'>Are you sure you want to delete this note?</p>
           {!isLoading
-            ? <div className='flex justify-between'>
-              <button
-                className='rounded-xl text-3xl capitalize'
-                onClick={handleRemove}
-              >👍
-              </button>
-              <button
-                className='rounded-xl text-3xl capitalize'
-                onClick={handleHideModal}
-              >👎
-              </button>
+            ? <div className='flex gap-10'>
+              <Button onClick={handleRemove}>Yes</Button>
+              <Button onClick={handleHideModal}>No</Button>
             </div>
             : <p>Loading...</p>}
         </div>)
@@ -83,7 +76,7 @@ function NoteCard ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data
         <p className='overflow-hidden text-ellipsis text-lg font-semibold'>{data.title}</p>
         <p className='break-words'>{data.content}</p>
       </Link>
-      <div className='flex items-end justify-end gap-2 text-2xl'>
+      <div className='flex items-end justify-end gap-4 text-2xl'>
         <p
           onClick={handleChangeState}
           className='cursor-pointer'

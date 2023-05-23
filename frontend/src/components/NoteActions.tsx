@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Note } from '../types'
 import { editNote, createNote } from '../api'
 import { useLocation } from 'wouter'
+import Button from './Button'
 
 type NoteFormProps = {
   defaultFormData?: Partial<Note>
@@ -42,8 +43,8 @@ function NoteForm ({ defaultFormData, formAction, isLoading = false }: NoteFormP
           setFormData(prev => ({ ...prev, content: e.target.value }))
         }}
       />
-      <div className='mt-auto grid grid-cols-3 p-4'>
-        <button className='place-self-start'>{isLoading ? '◴' : 'Save'}</button>
+      <div className='mt-auto grid grid-cols-3 items-center p-4'>
+        <Button>{isLoading ? '◴' : 'Save'}</Button>
         {defaultFormData &&
           <p className='col-span-2 col-start-2 text-end'>
             Last updated: {defaultFormData?.updatedAt?.toLocaleString('en-US')}

@@ -1,4 +1,5 @@
 import { Link } from 'wouter'
+import Button from './Button'
 
 const Header = ({ path = 'home' }: { path: 'archieved' | 'home' }) => {
   function render () {
@@ -8,7 +9,9 @@ const Header = ({ path = 'home' }: { path: 'archieved' | 'home' }) => {
           <>
             <h1 className='text-3xl'>My notes</h1>
             <Link href='/new' className=''>
-              Create Note
+              <Button>
+                Create Note
+              </Button>
             </Link>
             <Link href='/archieved' className='text-blue-500 underline'>
               Archieved notes
@@ -28,7 +31,7 @@ const Header = ({ path = 'home' }: { path: 'archieved' | 'home' }) => {
   }
 
   return (
-    <div className='flex flex-col place-items-baseline gap-2 py-5 md:flex-row md:gap-10'>
+    <div className='flex min-h-[80px] flex-col items-center gap-2 py-5 md:flex-row md:gap-10'>
       {render()}
     </div>
   )
