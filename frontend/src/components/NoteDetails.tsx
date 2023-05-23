@@ -5,8 +5,8 @@ import { useLocation } from 'wouter'
 
 type NoteFormProps = {
   defaultFormData?: Partial<Note>
-  // formAction: (newData: Partial<Note> | Pick<Note, 'title' | 'content'>) => void
-  formAction: (newData: any) => void
+  // formAction: (newData: Partial<Note>) => void
+  formAction: (newData: any) => void // for some reason Pick<Note, 'title' | 'content'>) is not compatible with Partial<Note>
   isLoading?: boolean
 }
 
@@ -74,7 +74,7 @@ export default function NoteDetails ({ data, onUpdate }: { data: Note, onUpdate:
   )
 }
 
-export function CreateNote ({ onUpdate }: { onUpdate: (id: string, data: Partial<Note>) => void }) {
+export function CreateNote ({ onAddition }: { onAddition: (data: Note) => void }) {
   const [isLoading, setIsLoading] = useState(false)
   const [,setLocation] = useLocation()
 
@@ -83,7 +83,7 @@ export function CreateNote ({ onUpdate }: { onUpdate: (id: string, data: Partial
     setIsLoading(true)
     try {
       const createdData = await createNote(newFormData)
-      // onUpdate(undefined, createdData, {})
+      onAddition(createdData)
     } catch (err) {
       setIsLoading(false)
       console.error(err)

@@ -32,6 +32,10 @@ function App () {
     })
   }
 
+  function handleNoteAddition (newNote: Note) {
+    setNotes(prev => [...prev, newNote])
+  }
+
   return (
     <section className='px-5'>
       <Header path={showArchieved ? 'archieved' : 'home'} />
@@ -53,7 +57,7 @@ function App () {
       </Route>
       <Route path='/new'>
         <Modal onClose={() => setLocation('/')}>
-          <CreateNote onUpdate={() => {}} />
+          <CreateNote onAddition={handleNoteAddition} />
         </Modal>
       </Route>
     </section>
