@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 import Modal from './Modal'
 import { Note } from '../types'
 import { editNote, removeNote } from '../api'
+import { Link } from 'wouter'
 
 export function NoteList ({ notes, onNoteUpdate }: { notes: Note[], onNoteUpdate: (id: string, data: Partial<Note>, opt?: { delete: boolean }) => void }) {
   if (notes.length === 0) return <div>There's nothing to show here...</div>
@@ -76,17 +77,23 @@ function NoteCard ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data
         <Modal onClose={handleHideModal}>{modal}</Modal>,
         document.body
       )}
-      <div className='h-full cursor-pointer overflow-hidden'>
+      <Link
+        href={`/note/${data.id}`}
+        className='block h-full cursor-pointer overflow-hidden'
+      >
         <p className='overflow-hidden text-ellipsis text-lg font-semibold'>{data.title}</p>
         <p className='break-words'>{data.content}</p>
-      </div>
+      </Link>
       <div className='flex items-end justify-end gap-2 text-2xl'>
         <p
           onClick={handleChangeState}
           className='cursor-pointer'
         >{isLoading ? '◴' : data.archieved ? '⬆️' : '🗂️'}
         </p>
-        <p className='cursor-pointer'>✏️</p>
+        <Link
+          href={`/note/${data.id}`}
+          className='cursor-pointer'
+        >✏️</Link>
         <p
           onClick={handleShowModal}
           className='cursor-pointer'
