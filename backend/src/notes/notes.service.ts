@@ -19,7 +19,14 @@ export class NotesService {
   }
 
   update(id: number, updateNoteDto: UpdateNoteDto) {
-    return this.prisma.note.update({ where: { id }, data: updateNoteDto });
+    return this.prisma.note.update({
+      where: { id },
+      data: {
+        title: updateNoteDto.title,
+        content: updateNoteDto.content,
+        archieved: updateNoteDto.archieved,
+      },
+    });
   }
 
   remove(id: number) {
