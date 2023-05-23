@@ -7,6 +7,9 @@ const Header = ({ path = 'home' }: { path: 'archieved' | 'home' }) => {
         return (
           <>
             <h1 className='text-3xl'>My notes</h1>
+            <Link href='/new' className=''>
+              Create Note
+            </Link>
             <Link href='/archieved' className='text-blue-500 underline'>
               Archieved notes
             </Link>

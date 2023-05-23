@@ -4,7 +4,7 @@ import { Note } from './types'
 import { getNotes } from './api'
 import Header from './components/Header'
 import { Route, useLocation, useRoute } from 'wouter'
-import NoteDetails from './components/NoteDetails'
+import NoteDetails, { CreateNote } from './components/NoteDetails'
 import Modal from './components/Modal'
 
 function App () {
@@ -36,7 +36,9 @@ function App () {
     <section className='px-5'>
       <Header path={showArchieved ? 'archieved' : 'home'} />
       <NoteList
-        notes={notes.filter(note => note.archieved === showArchieved)}
+        notes={notes
+          .filter(note => note.archieved === showArchieved)
+          .sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())}
         onNoteUpdate={handleNoteUpdate}
       />
       <Route path='/note/:id'>
@@ -48,6 +50,11 @@ function App () {
             </Modal>
           )
         }}
+      </Route>
+      <Route path='/new'>
+        <Modal onClose={() => setLocation('/')}>
+          <CreateNote onUpdate={() => {}} />
+        </Modal>
       </Route>
     </section>
   )
