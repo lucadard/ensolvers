@@ -37,7 +37,7 @@ function App () {
   }
 
   return (
-    <section className='px-5'>
+    <section className='px-5 pb-10'>
       <Header path={showArchieved ? 'archieved' : 'home'} />
       <NoteList
         notes={notes

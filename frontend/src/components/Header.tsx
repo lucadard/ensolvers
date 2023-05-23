@@ -28,7 +28,7 @@ const Header = ({ path = 'home' }: { path: 'archieved' | 'home' }) => {
   }
 
   return (
-    <div className='flex place-items-baseline gap-10 py-5'>
+    <div className='flex flex-col place-items-baseline gap-2 py-5 md:flex-row md:gap-10'>
       {render()}
     </div>
   )

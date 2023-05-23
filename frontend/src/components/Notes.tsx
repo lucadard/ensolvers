@@ -10,7 +10,7 @@ export function NoteList ({ notes, onNoteUpdate }: { notes: Note[], onNoteUpdate
   if (notes.length === 0) return <div>There's nothing to show here...</div>
 
   return (
-    <ul className='grid auto-cols-min grid-flow-col items-start gap-4'>
+    <ul className='grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-5 '>
       {notes.map(note => <NoteCard key={note.id} data={note} onUpdate={onNoteUpdate} />)}
     </ul>
   )
@@ -71,7 +71,7 @@ function NoteCard ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data
   }
 
   return (
-    <li className='aspect-[4/3] w-[240px] max-w-md rounded-md bg-yellow-200 p-4 shadow-lg'>
+    <li className='aspect-[4/3] w-full rounded-md bg-yellow-200 p-4 shadow-lg'>
       {modal && createPortal(
         <Modal onClose={handleHideModal}>{modal}</Modal>,
         document.body
