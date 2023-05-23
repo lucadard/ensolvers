@@ -2,10 +2,20 @@ import { useEffect, useState } from 'react'
 import { NoteList } from './components/Notes'
 import { Note } from './types'
 import { getNotes } from './api'
+import Header from './components/Header'
+import { Route, useLocation, useRoute } from 'wouter'
+import NoteDetails from './components/NoteDetails'
+import Modal from './components/Modal'
 
 function App () {
-  const [showArchieved, setShowArchieved] = useState(false)
   const [notes, setNotes] = useState<Note[]>([])
+  const [isArchievedPath] = useRoute('/archieved')
+  const [isNotePath, params] = useRoute('/note/:id')
+  const [, setLocation] = useLocation()
+
+  const currentNote = isNotePath && notes.find(note => note.id === params?.id)
+
+  const showArchieved = currentNote ? currentNote.archieved : isArchievedPath
 
   useEffect(() => {
     getNotes().then(setNotes).catch(console.error)
@@ -23,12 +33,23 @@ function App () {
   }
 
   return (
-    <>
+    <section className='px-5'>
+      <Header path={showArchieved ? 'archieved' : 'home'} />
       <NoteList
         notes={notes.filter(note => note.archieved === showArchieved)}
         onNoteUpdate={handleNoteUpdate}
       />
-    </>
+      <Route path='/note/:id'>
+        {() => {
+          if (!currentNote) return null
+          return (
+            <Modal onClose={() => setLocation(showArchieved ? '/archieved' : '/')}>
+              <NoteDetails data={currentNote} onUpdate={handleNoteUpdate} />
+            </Modal>
+          )
+        }}
+      </Route>
+    </section>
   )
 }
 
