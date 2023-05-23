@@ -11,10 +11,27 @@ datasource db {
 }
 
 model Note {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  archieved Boolean  @default(false)
+  id         String              @id @default(cuid())
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  title      String
+  content    String?
+  archieved  Boolean             @default(false)
+  categories CategoriesOnNotes[]
+}
+
+model Category {
+  id                Int                 @id @default(autoincrement())
+  name              String              @unique
+  CategoriesOnNotes CategoriesOnNotes[]
+}
+
+model CategoriesOnNotes {
+  note       Note     @relation(fields: [noteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  noteId     String // relation scalar field (used in the `@relation` attribute above)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+
+  @@id([noteId, categoryId])
 }
