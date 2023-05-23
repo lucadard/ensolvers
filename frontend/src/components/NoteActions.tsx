@@ -51,7 +51,7 @@ function NoteForm ({ defaultFormData, formAction, isLoading = false }: NoteFormP
   )
 }
 
-export default function NoteDetails ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data: Partial<Note>) => void }) {
+export function EditNote ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data: Partial<Note>) => void }) {
   const [isLoading, setIsLoading] = useState(false)
 
   async function handleEditNote (newFormData: Partial<Note>) {
