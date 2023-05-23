@@ -2,15 +2,54 @@ import { useState } from 'react'
 import { Note } from '../types'
 import { editNote } from '../api'
 
+type NoteFormProps = {
+  defaultFormData?: Partial<Note>
+  formAction: (newData: Partial<Note>) => void
+  isLoading?: boolean
+}
+
+function NoteForm ({ defaultFormData, formAction, isLoading = false }: NoteFormProps) {
+  const [formData, setFormData] = useState<Partial<Note>>({
+    ...defaultFormData
+  })
+  function handleFormSubmit (e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    formAction(formData)
+  }
+  return (
+    <form onSubmit={handleFormSubmit} className='flex max-h-[500px] flex-col'>
+      <input
+        className='bg-transparent px-4 py-3 pt-4 text-2xl outline-none'
+        value={formData.title ?? ''}
+        placeholder='Title'
+        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+      />
+      <textarea
+        className='min-h-[100px] resize-none px-4 py-3 text-lg outline-none'
+        value={formData.content ?? ''}
+        placeholder='Note'
+        ref={(e) => {
+          if (!e) return
+          e.style.height = `${e.scrollHeight}px`
+        }}
+        onChange={(e) => {
+          e.currentTarget.style.height = '100px'
+          e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`
+          setFormData(prev => ({ ...prev, content: e.target.value }))
+        }}
+      />
+      <div className='mt-auto grid grid-cols-3 p-4'>
+        <button className='place-self-start'>{isLoading ? '◴' : 'Save'}</button>
+        <p className='col-span-2 col-start-2 text-end'>Last updated: {defaultFormData?.updatedAt?.toLocaleString('en-US')}</p>
+      </div>
+    </form>
+  )
+}
+
 export default function NoteDetails ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data: Partial<Note>) => void }) {
   const [isLoading, setIsLoading] = useState(false)
-  const [newFormData, setNewFormData] = useState<Partial<Note>>({
-    title: data.title,
-    content: data.content
-  })
 
-  async function handleEditNote (e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  async function handleEditNote (newFormData: Partial<Note>) {
     if (isLoading) return
     setIsLoading(true)
     try {
@@ -23,31 +62,6 @@ export default function NoteDetails ({ data, onUpdate }: { data: Note, onUpdate:
   }
 
   return (
-    <form onSubmit={handleEditNote} className='flex max-h-[500px] flex-col'>
-      <input
-        className='bg-transparent px-4 py-3 pt-4 text-2xl outline-none'
-        value={newFormData.title ?? ''}
-        placeholder='Title'
-        onChange={(e) => setNewFormData(prev => ({ ...prev, title: e.target.value }))}
-      />
-      <textarea
-        className='min-h-[100px] resize-none px-4 py-3 text-lg outline-none'
-        value={newFormData.content ?? ''}
-        placeholder='Note'
-        ref={(e) => {
-          if (!e) return
-          e.style.height = `${e.scrollHeight}px`
-        }}
-        onChange={(e) => {
-          e.currentTarget.style.height = '100px'
-          e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`
-          setNewFormData(prev => ({ ...prev, content: e.target.value }))
-        }}
-      />
-      <div className='mt-auto grid grid-cols-3 p-4'>
-        <button className='place-self-start'>{isLoading ? '◴' : 'Save'}</button>
-        <p className='col-span-2 col-start-2 text-end'>Last updated: {data.updatedAt.toLocaleString('en-US')}</p>
-      </div>
-    </form>
+    <NoteForm defaultFormData={data} formAction={handleEditNote} />
   )
 }
