@@ -24,7 +24,6 @@ function NoteCard ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data
     setIsLoading(true)
     try {
       const editedNote = await editNote(data.id, { archieved: !data.archieved })
-      console.log(editedNote)
       onUpdate(data.id, editedNote)
     } catch (err) {
       console.error(err)
