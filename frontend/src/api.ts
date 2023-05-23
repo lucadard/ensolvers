@@ -6,6 +6,7 @@ axios.defaults.baseURL = 'http://localhost:3000/'
 function noteParser (noteData: ApiNote): Note {
   return {
     ...noteData,
+    id: noteData.id + '',
     createdAt: new Date(noteData.createdAt),
     updatedAt: new Date(noteData.updatedAt)
   }
