@@ -4,7 +4,7 @@ import { Note } from './types'
 import { getNotes } from './api'
 import Header from './components/Header'
 import { Route, useLocation, useRoute } from 'wouter'
-import NoteDetails, { CreateNote } from './components/NoteDetails'
+import { CreateNote, EditNote } from './components/NoteActions'
 import Modal from './components/Modal'
 
 function App () {
@@ -14,13 +14,14 @@ function App () {
   const [, setLocation] = useLocation()
 
   const currentNote = isNotePath && notes.find(note => note.id === params?.id)
-
+  // If a note is being edited, I want to keep showing the same notes in NoteList
   const showArchieved = currentNote ? currentNote.archieved : isArchievedPath
 
   useEffect(() => {
     getNotes().then(setNotes).catch(console.error)
   }, [])
 
+  // Handle notes on-memory when db is updated
   function handleNoteUpdate (id: string, data: Partial<Note>, opt?: { delete: boolean }) {
     setNotes(prev => {
       const noteIndex = prev.findIndex(note => note.id === id)
@@ -31,7 +32,6 @@ function App () {
       return notesCopy
     })
   }
-
   function handleNoteAddition (newNote: Note) {
     setNotes(prev => [...prev, newNote])
   }
@@ -50,7 +50,7 @@ function App () {
           if (!currentNote) return null
           return (
             <Modal onClose={() => setLocation(showArchieved ? '/archieved' : '/')}>
-              <NoteDetails data={currentNote} onUpdate={handleNoteUpdate} />
+              <EditNote data={currentNote} onUpdate={handleNoteUpdate} />
             </Modal>
           )
         }}
