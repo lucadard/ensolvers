@@ -7,7 +7,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class NotesService {
   constructor(private prisma: PrismaService) {}
   create(createNoteDto: CreateNoteDto) {
-    return this.prisma.note.create({ data: createNoteDto });
+    return this.prisma.note.create({
+      data: {
+        title: createNoteDto.title,
+        content: createNoteDto.content,
+        archieved: createNoteDto.archieved,
+      },
+    });
   }
 
   findAll() {
