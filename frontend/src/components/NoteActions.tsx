@@ -24,6 +24,8 @@ function NoteForm ({ defaultFormData, formAction, isLoading = false }: NoteFormP
         className='bg-transparent px-4 py-3 pt-4 text-2xl outline-none'
         value={formData.title ?? ''}
         placeholder='Title'
+        autoComplete='off'
+        autoFocus
         onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
       />
       <textarea
