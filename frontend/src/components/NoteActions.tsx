@@ -1,73 +1,15 @@
 import { useState } from 'react'
 import { Category, Note } from '../types'
-import { editNote, createNote, createCategory, removeCategoryFromNote, addCategoryToNote } from '../api'
+import { editNote, createNote } from '../api'
 import { useLocation } from 'wouter'
 import Button from './Button'
 import { useData } from '../context/DataContext'
+import { CategoryList } from './NoteCategories'
 
 type NoteFormProps = {
   defaultFormData?: Partial<Note>
   // formAction: (newData: Partial<Note>) => void
   formAction: (newData: any) => void // for some reason Pick<Note, 'title' | 'content'>) is not compatible with Partial<Note>
-}
-
-function CategoryList ({ noteId, noteCategories = [], setNoteCategories }: { noteId: string, noteCategories?: Category[], setNoteCategories: (newCategories: Category[]) => void }) {
-  const { addCategory: cat } = useData()
-  const [newCategory, setNewCategory] = useState('')
-
-  const isNoteCreation = !noteId
-
-  async function addCategory (noteId: string, name: string) {
-    try {
-      const newCategory = await createCategory(name)
-      if (!isNoteCreation) await addCategoryToNote(noteId, newCategory.id)
-      cat(newCategory)
-      setNoteCategories([...noteCategories, newCategory])
-      setNewCategory('')
-    } catch (err) { console.error(err) }
-  }
-
-  async function removeCategory (id: string, categoryId: number) {
-    try {
-      if (!isNoteCreation) await removeCategoryFromNote(id, categoryId)
-      setNoteCategories(noteCategories.filter(cat => cat.id !== categoryId))
-    } catch (err) { console.error(err) }
-  }
-
-  return (
-    <div>
-      <ul className='flex flex-wrap gap-3 p-4'>
-        {noteCategories.map(category =>
-          <li
-            key={category.id}
-            className='flex w-min gap-2 rounded-full border bg-transparent p-2 px-4 text-lg outline-none'
-          >
-            <p>🏷️</p>
-            <p className='whitespace-nowrap'>{category.name}</p>
-            <span
-              onClick={async () => await removeCategory(noteId, category.id)}
-              className='scale-75 cursor-pointer'
-            >╳
-            </span>
-          </li>)}
-      </ul>
-      <div className='flex items-center gap-2'>
-        <button
-          onClick={async () => await addCategory(noteId, newCategory)}
-          className='ml-4 grid aspect-square h-10 w-10 place-content-center rounded-full border bg-gray-500/50'
-        >
-          ➕
-        </button>
-        <input
-          placeholder='Category'
-          className='rounded-full border bg-transparent p-2 px-4 text-lg outline-none'
-          value={newCategory}
-          onChange={(e) => setNewCategory(e.target.value)}
-        />
-      </div>
-    </div>
-
-  )
 }
 
 function NoteForm ({ defaultFormData, formAction }: NoteFormProps) {
