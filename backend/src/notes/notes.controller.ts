@@ -30,6 +30,18 @@ export class NotesController {
     return this.notesService.findOne(id);
   }
 
+  @Patch('/addCategory')
+  addCategory(@Body() { id, categoryId }: { id: string; categoryId: number }) {
+    return this.notesService.addCategory(id, categoryId);
+  }
+
+  @Patch('/removeCategory')
+  removeCategory(
+    @Body() { id, categoryId }: { id: string; categoryId: number },
+  ) {
+    return this.notesService.removeCategory(id, categoryId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
     return this.notesService.update(id, updateNoteDto);
