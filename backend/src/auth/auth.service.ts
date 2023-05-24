@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { compareSync, hashSync, genSaltSync } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,7 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found');
 
-    const isValidPassword = user.password === password;
+    const isValidPassword = compareSync(password, user.password);
 
     if (!isValidPassword) throw new UnauthorizedException('Password not valid');
 
@@ -36,7 +37,7 @@ export class AuthService {
     const newUser = await this.prisma.user.create({
       data: {
         email,
-        password,
+        password: hashSync(password, genSaltSync(10)),
       },
     });
 
