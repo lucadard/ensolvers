@@ -6,8 +6,9 @@ import { Category, Note } from '../types'
 import { editNote, removeNote } from '../api'
 import { Link } from 'wouter'
 import Button from './Button'
+import { useData } from '../context/DataContext'
 
-export function NoteList ({ notes, categories, onNoteUpdate }: { notes: Note[], categories: Category[], onNoteUpdate: (id: string, data: Partial<Note>, opt?: { delete: boolean }) => void }) {
+export function NoteList ({ notes, categories }: { notes: Note[], categories: Category[] }) {
   const [categoryFilter, setCategoryFilter] = useState<Category['id']>(0)
 
   if (notes.length === 0) return <div>There's nothing to show here...</div>
@@ -33,19 +34,20 @@ export function NoteList ({ notes, categories, onNoteUpdate }: { notes: Note[], 
           </option>)}
       </select>
       <ul className='grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-5 '>
-        {filteredNotes.map(note => <NoteCard key={note.id} data={note} onUpdate={onNoteUpdate} />)}
+        {filteredNotes.map(note => <NoteCard key={note.id} data={note} />)}
       </ul>
     </>
   )
 }
 
-function NoteCard ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data: Partial<Note>, opt?: { delete: boolean }) => void }) {
+function NoteCard ({ data }: { data: Note }) {
   const [modal, setModal] = useState<React.ReactNode>(null)
+  const { updateNote } = useData()
 
   async function handleChangeState () {
     try {
       const editedNote = await editNote(data.id, { archieved: !data.archieved })
-      onUpdate(data.id, editedNote)
+      updateNote(data.id, editedNote)
     } catch (err) {
       console.error(err)
     }
@@ -54,7 +56,7 @@ function NoteCard ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data
   async function handleRemove () {
     try {
       await removeNote(data.id)
-      onUpdate(data.id, {}, { delete: true })
+      updateNote(data.id, {}, { delete: true })
     } catch (err) {
       console.error(err)
     }

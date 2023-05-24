@@ -3,6 +3,7 @@ import { Category, Note } from '../types'
 import { editNote, createNote, createCategory, removeCategoryFromNote, addCategoryToNote } from '../api'
 import { useLocation } from 'wouter'
 import Button from './Button'
+import { useData } from '../context/DataContext'
 
 type NoteFormProps = {
   defaultFormData?: Partial<Note>
@@ -10,31 +11,33 @@ type NoteFormProps = {
   formAction: (newData: any) => void // for some reason Pick<Note, 'title' | 'content'>) is not compatible with Partial<Note>
 }
 
-function CategoryList ({ noteId, categories = [], setCategories }: { noteId: string, categories?: Category[], setCategories: (newCategories: Category[]) => void }) {
+function CategoryList ({ noteId, noteCategories = [], setNoteCategories }: { noteId: string, noteCategories?: Category[], setNoteCategories: (newCategories: Category[]) => void }) {
+  const { addCategory: cat } = useData()
   const [newCategory, setNewCategory] = useState('')
 
   const isNoteCreation = !noteId
 
-  async function addCategory (id: string, name: string) {
+  async function addCategory (noteId: string, name: string) {
     try {
       const newCategory = await createCategory(name)
-      !isNoteCreation && await addCategoryToNote(id, newCategory.id)
-      setCategories([...categories, newCategory])
+      if (!isNoteCreation) await addCategoryToNote(noteId, newCategory.id)
+      cat(newCategory)
+      setNoteCategories([...noteCategories, newCategory])
       setNewCategory('')
     } catch (err) { console.error(err) }
   }
 
   async function removeCategory (id: string, categoryId: number) {
     try {
-      !isNoteCreation && await removeCategoryFromNote(id, categoryId)
-      setCategories(categories.filter(cat => cat.id !== categoryId))
+      if (!isNoteCreation) await removeCategoryFromNote(id, categoryId)
+      setNoteCategories(noteCategories.filter(cat => cat.id !== categoryId))
     } catch (err) { console.error(err) }
   }
 
   return (
     <div>
       <ul className='flex flex-wrap gap-3 p-4'>
-        {categories.map(category =>
+        {noteCategories.map(category =>
           <li
             key={category.id}
             className='flex w-min gap-2 rounded-full border bg-transparent p-2 px-4 text-lg outline-none'
@@ -68,6 +71,8 @@ function CategoryList ({ noteId, categories = [], setCategories }: { noteId: str
 }
 
 function NoteForm ({ defaultFormData, formAction }: NoteFormProps) {
+  const { updateNote } = useData()
+
   const [formData, setFormData] = useState<Partial<Note>>({
     ...defaultFormData
   })
@@ -103,8 +108,13 @@ function NoteForm ({ defaultFormData, formAction }: NoteFormProps) {
       />
       <CategoryList
         noteId={defaultFormData?.id ?? ''}
-        categories={formData?.categories}
-        setCategories={(categories: Category[]) => setFormData(prev => ({ ...prev, categories }))}
+        noteCategories={formData?.categories}
+        setNoteCategories={(categories: Category[]) => {
+          setFormData(prev => {
+            defaultFormData?.id && updateNote(defaultFormData?.id, { categories })
+            return { ...prev, categories }
+          })
+        }}
       />
       <div className='mt-auto grid grid-cols-3 items-center p-4'>
         <Button onClick={handleFormSubmit}>{formData.id ? 'Save' : 'Create'}</Button>
@@ -117,11 +127,13 @@ function NoteForm ({ defaultFormData, formAction }: NoteFormProps) {
   )
 }
 
-export function EditNote ({ data, onUpdate }: { data: Note, onUpdate: (id: string, data: Partial<Note>) => void }) {
+export function EditNote ({ data }: { data: Note }) {
+  const { updateNote } = useData()
+
   async function handleEditNote (newFormData: Partial<Note>) {
     try {
       const editedData = await editNote(data.id, newFormData)
-      onUpdate(data.id, editedData)
+      updateNote(data.id, editedData)
     } catch (err) {
       console.error(err)
     }
@@ -135,13 +147,14 @@ export function EditNote ({ data, onUpdate }: { data: Note, onUpdate: (id: strin
   )
 }
 
-export function CreateNote ({ onAddition }: { onAddition: (data: Note) => void }) {
+export function CreateNote () {
+  const { addNote } = useData()
   const [,setLocation] = useLocation()
 
   async function handleCreateNote (newFormData: Pick<Note, 'title' | 'content' | 'categories'>) {
     try {
       const createdData = await createNote(newFormData)
-      onAddition(createdData)
+      addNote(createdData)
     } catch (err) {
       console.error(err)
     }
