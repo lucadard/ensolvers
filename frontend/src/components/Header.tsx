@@ -38,8 +38,6 @@ const Header = ({ path = 'home' }: { path: 'archieved' | 'home' }) => {
     setUserToken(undefined)
   }
 
-  console.log(user)
-
   return (
     <div className='flex justify-between'>
       <div className='flex min-h-[80px] flex-col gap-2 py-5 md:flex-row md:items-center md:gap-10'>
