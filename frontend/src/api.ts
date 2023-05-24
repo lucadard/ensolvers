@@ -1,6 +1,5 @@
 import axios from 'axios'
-import jwt from 'jwt-decode'
-import { ApiNote, Category, Note, User } from './types'
+import { ApiNote, Category, Note } from './types'
 
 axios.defaults.baseURL = 'http://localhost:3000/'
 
