@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ApiNote, Note } from './types'
+import { ApiNote, Category, Note } from './types'
 
 axios.defaults.baseURL = 'http://localhost:3000/'
 
@@ -7,6 +7,7 @@ function noteParser (noteData: ApiNote): Note {
   return {
     ...noteData,
     id: noteData.id + '',
+    categories: noteData.categories?.map(({ category }) => category) ?? [],
     createdAt: new Date(noteData.createdAt),
     updatedAt: new Date(noteData.updatedAt)
   }
@@ -15,6 +16,11 @@ function noteParser (noteData: ApiNote): Note {
 export const getNotes = async (): Promise<Note[]> => {
   const { data } = await axios.get<ApiNote[]>('notes')
   return data.map(apiNote => noteParser(apiNote))
+}
+
+export const getCategories = async (): Promise<Category[]> => {
+  const { data } = await axios.get<Category[]>('categories')
+  return data
 }
 
 export const getNoteById = async (id: string): Promise<Note> => {
@@ -35,4 +41,22 @@ export const removeNote = async (id: Note['id']) => {
 export const createNote = async (note: Partial<Omit<Note, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Note> => {
   const { data } = await axios.post<ApiNote>('notes', note)
   return noteParser(data)
+}
+
+export const createCategory = async (categoryName: string): Promise<Category> => {
+  const { data: categoryData } = await axios
+    .post<Category>('categories', { name: categoryName })
+  return categoryData
+}
+
+export const addCategoryToNote = async (noteId: string, categoryId: number): Promise<Note> => {
+  const { data: noteData } = await axios
+    .patch<ApiNote>('notes/addCategory', { id: noteId, categoryId })
+  return noteParser(noteData)
+}
+
+export const removeCategoryFromNote = async (noteId: string, categoryId: number): Promise<Note> => {
+  const { data: noteData } = await axios
+    .patch<ApiNote>('notes/removeCategory', { id: noteId, categoryId })
+  return noteParser(noteData)
 }
