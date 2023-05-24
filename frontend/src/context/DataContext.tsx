@@ -1,8 +1,11 @@
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react'
-import { Category, Note } from '../types'
+import { Category, Note, User } from '../types'
 import { getCategories, getNotes } from '../api'
 
-type State = { notes: Note[]
+type State = {
+  user?: User
+  setUser: (user: User | undefined) => void
+  notes: Note[]
   categories: Category[]
   updateNote: (id: string, data: Partial<Note>, opt?: { delete: boolean }) => void
   addNote: (newNote: Note) => void
@@ -14,6 +17,7 @@ const DataStateContext = createContext<State | undefined
 >(undefined)
 
 function DataProvider ({ children }: DataProviderProps) {
+  const [user, setUser] = useState<User | undefined>(undefined)
   const [notes, setNotes] = useState<Note[]>([])
   const [categories, setCategories] = useState<Category[]>([])
 
@@ -23,6 +27,8 @@ function DataProvider ({ children }: DataProviderProps) {
   }, [])
 
   const value = {
+    user,
+    setUser: (user: User | undefined) => setUser(user),
     notes,
     setNotes,
     updateNote: (id: string, data: Partial<Note>, opt?: { delete: boolean }) => {
