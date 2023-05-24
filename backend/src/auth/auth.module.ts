@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
-const jwtSecret = '1234';
+const jwtSecret = process.env.JWT_SECRET;
 
 @Module({
   controllers: [AuthController],
