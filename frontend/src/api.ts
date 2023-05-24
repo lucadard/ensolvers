@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { ApiNote, Category, Note } from './types'
+import jwt from 'jwt-decode'
+import { ApiNote, Category, Note, User } from './types'
 
 axios.defaults.baseURL = 'http://localhost:3000/'
 
@@ -59,4 +60,26 @@ export const removeCategoryFromNote = async (noteId: string, categoryId: number)
   const { data: noteData } = await axios
     .patch<ApiNote>('notes/removeCategory', { id: noteId, categoryId })
   return noteParser(noteData)
+}
+
+export const sendLogin = async (email: string, password: string): Promise<User | undefined> => {
+  try {
+    const { data } = await axios.post<{ accessToken: string }>('auth/login', { email, password })
+    const decodedUser = jwt<User>(data.accessToken)
+    return decodedUser
+  } catch (err) {
+    console.error(err)
+    return undefined
+  }
+}
+
+export const sendSignup = async (email: string, password: string): Promise<User | undefined> => {
+  try {
+    const { data } = await axios.post<{ accessToken: string }>('auth/signup', { email, password })
+    const decodedUser = jwt<User>(data.accessToken)
+    return decodedUser
+  } catch (err) {
+    console.error(err)
+    return undefined
+  }
 }
