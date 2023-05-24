@@ -1,0 +1,26 @@
+{
+  "name": "ensolvers",
+  "version": "1.0.0",
+  "description": "Ensolvers excercise.",
+  "main": "index.js",
+  "scripts": {
+    "installnstart": "npm run install:all && npm run start:dev",
+    "start:dev": "npm run start:frontend & npm run start:backend",
+    "start:frontend": "cd frontend && npm run dev",
+    "start:backend": "cd backend && npm run start",
+    "install:all": "npm run install:frontend & npm run install:backend",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucadard/ensolvers.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucadard/ensolvers/issues"
+  },
+  "homepage": "https://github.com/lucadard/ensolvers#readme"
+}
