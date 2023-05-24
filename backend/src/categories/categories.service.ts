@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class CategoriesService {
   constructor(private prisma: PrismaService) {}
   create(createCategoryDto: CreateCategoryDto) {
+    if (!createCategoryDto.name) throw new Error('Invalid name');
     return this.prisma.category.upsert({
       where: {
         name: createCategoryDto.name,
