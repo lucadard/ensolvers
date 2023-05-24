@@ -4,7 +4,7 @@ import Button from './Button'
 import { useData } from '../context/DataContext'
 
 const Header = ({ path = 'home' }: { path: 'archieved' | 'home' }) => {
-  const { user, setUser } = useData()
+  const { user, setUserToken } = useData()
   const [, setLocation] = useLocation()
   function render () {
     switch (path) {
@@ -35,7 +35,7 @@ const Header = ({ path = 'home' }: { path: 'archieved' | 'home' }) => {
   }
 
   function logout () {
-    setUser(undefined)
+    setUserToken(undefined)
   }
 
   console.log(user)

@@ -62,22 +62,20 @@ export const removeCategoryFromNote = async (noteId: string, categoryId: number)
   return noteParser(noteData)
 }
 
-export const sendLogin = async (email: string, password: string): Promise<User | undefined> => {
+export const sendLogin = async (email: string, password: string): Promise<string | undefined> => {
   try {
     const { data } = await axios.post<{ accessToken: string }>('auth/login', { email, password })
-    const decodedUser = jwt<User>(data.accessToken)
-    return decodedUser
+    return data.accessToken
   } catch (err) {
     console.error(err)
     return undefined
   }
 }
 
-export const sendSignup = async (email: string, password: string): Promise<User | undefined> => {
+export const sendSignup = async (email: string, password: string): Promise<string | undefined> => {
   try {
     const { data } = await axios.post<{ accessToken: string }>('auth/signup', { email, password })
-    const decodedUser = jwt<User>(data.accessToken)
-    return decodedUser
+    return data.accessToken
   } catch (err) {
     console.error(err)
     return undefined

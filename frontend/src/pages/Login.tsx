@@ -4,16 +4,16 @@ import { useState } from 'react'
 import { Link, useLocation } from 'wouter'
 
 const Login = () => {
-  const { setUser } = useData()
+  const { setUserToken } = useData()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [errorMessage, setErrorMessage] = useState('')
   const [,setLocation] = useLocation()
 
   async function handleFormSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const user = await sendLogin(formData.email, formData.password)
-    if (!user) return setErrorMessage('Invalid email or password')
-    setUser(user)
+    const token = await sendLogin(formData.email, formData.password)
+    if (!token) return setErrorMessage('Invalid email or password')
+    setUserToken(token)
     setLocation('/')
   }
   return (
