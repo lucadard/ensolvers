@@ -13,6 +13,11 @@ type Category = {
   name: string
 }
 
+type User = {
+  id: string
+  email: string
+}
+
 export type ApiNote = {
   id: string
   title: string
