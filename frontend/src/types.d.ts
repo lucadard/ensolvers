@@ -5,6 +5,12 @@ export type Note = {
   archieved: boolean
   createdAt: Date
   updatedAt: Date
+  categories: Category[]
+}
+
+type Category = {
+  id: number
+  name: string
 }
 
 export type ApiNote = {
@@ -14,4 +20,5 @@ export type ApiNote = {
   archieved: boolean
   createdAt: string
   updatedAt: string
+  categories: Array<{ category: Category }>
 }

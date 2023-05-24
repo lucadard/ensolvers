@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NoteList } from './components/Notes'
-import { Note } from './types'
-import { getNotes } from './api'
+import { Category, Note } from './types'
+import { getCategories, getNotes } from './api'
 import Header from './components/Header'
 import { Route, useLocation, useRoute } from 'wouter'
 import { CreateNote, EditNote } from './components/NoteActions'
@@ -9,6 +9,8 @@ import Modal from './components/Modal'
 
 function App () {
   const [notes, setNotes] = useState<Note[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+
   const [isArchievedPath] = useRoute('/archieved')
   const [isNotePath, params] = useRoute('/note/:id')
   const [, setLocation] = useLocation()
@@ -19,6 +21,7 @@ function App () {
 
   useEffect(() => {
     getNotes().then(setNotes).catch(console.error)
+    getCategories().then(setCategories).catch(console.error)
   }, [])
 
   // Handle notes on-memory when db is updated
@@ -43,6 +46,7 @@ function App () {
         notes={notes
           .filter(note => note.archieved === showArchieved)
           .sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())}
+        categories={categories}
         onNoteUpdate={handleNoteUpdate}
       />
       <Route path='/note/:id'>
